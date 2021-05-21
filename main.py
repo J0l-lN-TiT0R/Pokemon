@@ -23,7 +23,7 @@ while running:
         if event.type == p.QUIT:
             running = False
 
-    screen.fill(BLACK)
+    screen.fill(WHITE)
 
     player_group.draw(screen)
     player.update()
