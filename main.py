@@ -6,8 +6,6 @@ from settings import *
 p.init()
 clock = p.time.Clock()
 
-SCREEN_WIDTH = 1280
-SCREEN_HEIGHT = 720
 screen = p.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 p.display.set_caption(GAME_TITLE)
 p.display.set_icon(p.image.load("images/froggy.png"))
