@@ -5,6 +5,7 @@ from settings import *
 
 class Spritesheet:
     def __init__(self, image_file, scale_factor=1):
+        # Using convert_alpha() to make images blit faster on the screen
         self.sheet = p.image.load(image_file).convert_alpha()
         if scale_factor != 1:
             self.size = self.sheet.get_rect().size
@@ -12,9 +13,7 @@ class Spritesheet:
             self.sheet = p.transform.scale(self.sheet, self.target_size)
 
     def get_image(self, x, y, width, height):
-        # image = p.Surface((width, height), p.SRCALPHA)
-        # image.blit(self.sheet, (0, 0), (x, y, width, height))
-        # Alternative:
+        # Cut an image out of a larger spritesheet
         image = self.sheet.subsurface(x, y, width, height)
         return image
 
@@ -62,6 +61,8 @@ class Player(p.sprite.Sprite):
 
     def animate(self):
         now = p.time.get_ticks()
+        # Going to the next frame only if more than 100ms have passed
+        # since the last update
         if now - self.last_update > 100:
             self.last_update = now
 
@@ -76,5 +77,7 @@ class Player(p.sprite.Sprite):
             elif self.velocity.y < 0:
                 self.animation_cycle = self.walk_up_frames
 
+            # Cycling through frames and restraining ourselves
+            # by the size of the current animation
             self.frame = (self.frame + 1) % len(self.animation_cycle)
             self.image = self.animation_cycle[self.frame]
