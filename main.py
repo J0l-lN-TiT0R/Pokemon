@@ -10,15 +10,15 @@ screen = p.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 p.display.set_caption(GAME_TITLE)
 p.display.set_icon(p.image.load("images/froggy.png"))
 
-player = s.Player(s.Spritesheet('images/sheet.png'),
-                  (SCREEN_WIDTH/2, SCREEN_HEIGHT/2))
+player = s.Player(s.Spritesheet('images/sheet.png'), (100, 100))
 player_group = p.sprite.GroupSingle()
 player_group.add(player)
 
 running = True
 while running:
     for event in p.event.get():
-        if event.type == p.QUIT:
+        if event.type == p.QUIT or (event.type == p.KEYUP 
+                                    and event.key == p.K_q):
             running = False
 
     screen.fill(WHITE)

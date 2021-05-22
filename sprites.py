@@ -1,11 +1,14 @@
 import pygame as p
 from pygame.math import Vector2
+from settings import *
 
 
 class Spritesheet:
-    def __init__(self, image_file):
+    def __init__(self, image_file, scale_factor=2):
         self.sheet = p.image.load(image_file).convert_alpha()
-        self.sheet = p.transform.scale(self.sheet, (256, 256))
+        self.size = self.sheet.get_rect().size
+        self.target_size = tuple(i*scale_factor for i in self.size)
+        self.sheet = p.transform.scale(self.sheet, self.target_size)
 
     def get_image(self, x, y, width, height):
         image = p.Surface((width, height), p.SRCALPHA)
@@ -39,7 +42,7 @@ class Player(p.sprite.Sprite):
         if keys[p.K_d]:
             self.velocity.x = 1
 
-        self.rect.center += self.velocity * 5
+        self.rect.center += self.velocity * PLAYER_SPEED 
         self.animate()
 
     def load_images(self, spritesheet):
