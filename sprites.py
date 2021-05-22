@@ -12,8 +12,10 @@ class Spritesheet:
             self.sheet = p.transform.scale(self.sheet, self.target_size)
 
     def get_image(self, x, y, width, height):
-        image = p.Surface((width, height), p.SRCALPHA)
-        image.blit(self.sheet, (0, 0), (x, y, width, height))
+        # image = p.Surface((width, height), p.SRCALPHA)
+        # image.blit(self.sheet, (0, 0), (x, y, width, height))
+        # Alternative:
+        image = self.sheet.subsurface(x, y, width, height)
         return image
 
 
