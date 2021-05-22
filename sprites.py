@@ -4,11 +4,12 @@ from settings import *
 
 
 class Spritesheet:
-    def __init__(self, image_file, scale_factor=2):
+    def __init__(self, image_file, scale_factor=1):
         self.sheet = p.image.load(image_file).convert_alpha()
-        self.size = self.sheet.get_rect().size
-        self.target_size = tuple(i*scale_factor for i in self.size)
-        self.sheet = p.transform.scale(self.sheet, self.target_size)
+        if scale_factor != 1:
+            self.size = self.sheet.get_rect().size
+            self.target_size = tuple(i*scale_factor for i in self.size)
+            self.sheet = p.transform.scale(self.sheet, self.target_size)
 
     def get_image(self, x, y, width, height):
         image = p.Surface((width, height), p.SRCALPHA)
