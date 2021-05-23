@@ -14,6 +14,11 @@ player = s.Player(s.Spritesheet('images/sheet.png', 2), (100, 100))
 player_group = p.sprite.GroupSingle()
 player_group.add(player)
 
+map_group = p.sprite.Group()
+
+tile_map = s.TileMap(map_group, 'map.csv', 'images/rpg_tileset.png', 16)
+tile_map.load_map()
+
 running = True
 while running:
     for event in p.event.get():
@@ -23,6 +28,7 @@ while running:
 
     screen.fill(WHITE)
 
+    map_group.draw(screen)
     player_group.draw(screen)
     player.update()
 
