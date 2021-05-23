@@ -102,6 +102,7 @@ class TileMap:
         self.spacing = spacing
 
     def csv_to_list(self, csv_file):
+        """Return a 2D list made from date inside a csv file."""
         map_list = []
         with open(self.csv_file) as f:
             data = csv.reader(f, delimiter=',')
@@ -110,6 +111,7 @@ class TileMap:
         return map_list
 
     def parse_image(self):
+        """Return a dictionary with index, tile surface pairs."""
         index_to_image_map = {}
         image = p.image.load(self.image_file)
         if self.tile_size != TILE_SIZE:
@@ -131,11 +133,13 @@ class TileMap:
         return index_to_image_map
     
     def load_tiles(self, map_list, index_to_image_map):
+        """Load tile images to the group passed to the class."""
         for i, row in enumerate(map_list):
             for j, index in enumerate(row):
                 self.group.add(Tile(j, i, index_to_image_map[int(index)]))
         
     def load_map(self):
+        """Call class methods to generate the final map"""
         map_list = self.csv_to_list(self.csv_file)
         index_to_image_map = self.parse_image()
         tiles = self.load_tiles(map_list, index_to_image_map)
