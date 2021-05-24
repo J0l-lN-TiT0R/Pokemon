@@ -6,6 +6,10 @@ from settings import *
 
 class Spritesheet:
     def __init__(self, image_file, scale_factor=1):
+        """Load image_file into a self.sheet variable.
+         
+        Scale it by scale_factor.
+        """
         # Using convert_alpha() to make images blit faster on the screen
         self.sheet = p.image.load(image_file).convert_alpha()
         if scale_factor != 1:
@@ -14,13 +18,14 @@ class Spritesheet:
             self.sheet = p.transform.scale(self.sheet, self.target_size)
 
     def get_image(self, x, y, width, height):
-        # Cut an image out of a larger spritesheet
+        """Return an image cut out from the object spritesheet"""
         image = self.sheet.subsurface(x, y, width, height)
         return image
 
 
 class Player(p.sprite.Sprite):
     def __init__(self, spritesheet, pos):
+        """Initialize required variables and load images."""
         super().__init__()
 
         self.image = spritesheet.get_image(0, 0, 64, 64)
@@ -34,6 +39,12 @@ class Player(p.sprite.Sprite):
         self.velocity = Vector2(0, 0)
 
     def update(self):
+        """Move and animate the object."""
+        self.move()
+        self.animate()
+
+    def move(self):
+        """Move the object based on the current input."""
         self.velocity = Vector2(0, 0)
         keys = p.key.get_pressed()
         if keys[p.K_w]:
@@ -44,11 +55,10 @@ class Player(p.sprite.Sprite):
             self.velocity.x = -1
         if keys[p.K_d]:
             self.velocity.x = 1
-
         self.rect.center += self.velocity * PLAYER_SPEED 
-        self.animate()
 
     def load_images(self, spritesheet):
+        """Load animations from spritesheet into separate lists."""
         self.walk_right_frames = []
         self.walk_left_frames = []
         self.walk_up_frames = []
@@ -60,11 +70,15 @@ class Player(p.sprite.Sprite):
             self.walk_right_frames.append(spritesheet.get_image(x, 128, 64, 64))
             self.walk_up_frames.append(spritesheet.get_image(x, 192, 64, 64))
 
-    def animate(self):
+    def animate(self, frame_length=100):
+        """Go to the next frame of animation.
+
+        Set animation cycle based on the current velocity vector.
+        Go to the next frame if more time has passed in ms
+        than specified in frame_length parameter.
+        """
         now = p.time.get_ticks()
-        # Going to the next frame only if more than 100ms have passed
-        # since the last update
-        if now - self.last_update > 100:
+        if now - self.last_update > frame_length:
             self.last_update = now
 
             if self.velocity == Vector2(0, 0):
@@ -86,6 +100,7 @@ class Player(p.sprite.Sprite):
 
 class Tile(p.sprite.Sprite):
     def __init__(self, x, y, image):
+        """Assign image and set position of top left corner."""
         super().__init__()
         self.image = image
         self.rect = self.image.get_rect()
@@ -95,6 +110,7 @@ class Tile(p.sprite.Sprite):
 
 class TileMap:
     def __init__(self, group, csv_file, image_file, tile_size, spacing=0):
+        """Initialize required variables."""
         self.group = group
         self.csv_file = csv_file
         self.image_file = image_file
@@ -102,7 +118,7 @@ class TileMap:
         self.spacing = spacing
 
     def csv_to_list(self, csv_file):
-        """Return a 2D list made from date inside a csv file."""
+        """Return a 2D list made from data inside a csv file."""
         map_list = []
         with open(self.csv_file) as f:
             data = csv.reader(f, delimiter=',')
@@ -139,7 +155,7 @@ class TileMap:
                 self.group.add(Tile(j, i, index_to_image_map[int(index)]))
         
     def load_map(self):
-        """Call class methods to generate the final map"""
+        """Call class methods to generate the final map."""
         map_list = self.csv_to_list(self.csv_file)
         index_to_image_map = self.parse_image()
         tiles = self.load_tiles(map_list, index_to_image_map)
