@@ -102,7 +102,7 @@ class Player(p.sprite.Sprite):
 
 class Tile(p.sprite.Sprite):
     def __init__(self, game, x, y, image):
-        """Assign image and set position of top left corner."""
+        """Assign image and set the position of the top left corner."""
         self._layer = GROUND_LAYER
         self.groups = game.all_sprites
         super().__init__(self.groups)
