@@ -24,9 +24,11 @@ class Spritesheet:
 
 
 class Player(p.sprite.Sprite):
-    def __init__(self, spritesheet, pos):
+    def __init__(self, game, spritesheet, pos):
         """Initialize required variables and load images."""
-        super().__init__()
+        self._layer = PLAYER_LAYER
+        self.groups = game.all_sprites
+        super().__init__(self.groups)
 
         self.image = spritesheet.get_image(0, 0, 64, 64)
         self.rect = self.image.get_rect()
@@ -99,9 +101,11 @@ class Player(p.sprite.Sprite):
 
 
 class Tile(p.sprite.Sprite):
-    def __init__(self, x, y, image):
+    def __init__(self, game, x, y, image):
         """Assign image and set position of top left corner."""
-        super().__init__()
+        self._layer = GROUND_LAYER
+        self.groups = game.all_sprites
+        super().__init__(self.groups)
         self.image = image
         self.rect = self.image.get_rect()
         self.rect.x = x * TILE_SIZE
@@ -109,9 +113,9 @@ class Tile(p.sprite.Sprite):
 
 
 class TileMap:
-    def __init__(self, group, csv_file, image_file, tile_size, spacing=0):
+    def __init__(self, game, csv_file, image_file, tile_size, spacing=0):
         """Initialize required variables."""
-        self.group = group
+        self.game = game
         self.csv_file = csv_file
         self.image_file = image_file
         self.tile_size = tile_size
@@ -152,7 +156,7 @@ class TileMap:
         """Load tile images to the group passed to the class."""
         for i, row in enumerate(map_list):
             for j, index in enumerate(row):
-                self.group.add(Tile(j, i, index_to_image_map[int(index)]))
+                Tile(self.game, j, i, index_to_image_map[int(index)])
         
     def load_map(self):
         """Call class methods to generate the final map."""
