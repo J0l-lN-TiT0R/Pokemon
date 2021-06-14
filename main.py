@@ -1,5 +1,6 @@
 import pygame as p
 import sprites as s
+import game_map
 from settings import *
 
 
@@ -18,7 +19,7 @@ class Game:
         self.all_sprites = p.sprite.LayeredUpdates()
         self.player = s.Player(self, s.Spritesheet('images/sheet.png', 2),
                                (100, 100))
-        self.tile_map = s.TileMap(self, 'map.csv', 
+        self.tile_map = game_map.TileMap(self, 'map.csv', 
                                   'images/rpg_tileset.png', 16)
         self.tile_map.load_map()
 
