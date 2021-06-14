@@ -22,20 +22,20 @@ class Game:
                                   'images/rpg_tileset.png', 16)
         self.tile_map.load_map()
 
-    def events(self):
+    def _events(self):
         """Check for input events."""
         for event in p.event.get():
             if event.type == p.QUIT or (event.type == p.KEYUP 
                                         and event.key == p.K_q):
                 self.running = False
     
-    def update(self):
+    def _update(self):
         """Update the screen and all sprites on it."""
         self.all_sprites.update()
         self.clock.tick(FPS)
         p.display.flip()
 
-    def draw(self):
+    def _draw(self):
         """Draw all the sprites on the screen."""
         self.screen.fill(WHITE)
         self.all_sprites.draw(self.screen)
@@ -44,9 +44,9 @@ class Game:
         """The game loop."""
         self.running = True 
         while self.running:
-            self.events()
-            self.update()
-            self.draw()
+            self._events()
+            self._update()
+            self._draw()
 
 if __name__ == "__main__":
     game = Game()

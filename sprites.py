@@ -34,7 +34,7 @@ class Player(p.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = pos
 
-        self.load_images(spritesheet)
+        self._load_images(spritesheet)
         self.animation_cycle = self.walk_up_frames
         self.last_update = 0
         self.frame = 0
@@ -42,10 +42,10 @@ class Player(p.sprite.Sprite):
 
     def update(self):
         """Move and animate the object."""
-        self.move()
-        self.animate()
+        self._move()
+        self._animate()
 
-    def move(self):
+    def _move(self):
         """Move the object based on the current input."""
         self.velocity = Vector2(0, 0)
         keys = p.key.get_pressed()
@@ -58,8 +58,9 @@ class Player(p.sprite.Sprite):
         if keys[p.K_d]:
             self.velocity.x = 1
         self.rect.center += self.velocity * PLAYER_SPEED 
+        print(self.velocity)
 
-    def load_images(self, spritesheet):
+    def _load_images(self, spritesheet):
         """Load animations from spritesheet into separate lists."""
         self.walk_right_frames = []
         self.walk_left_frames = []
@@ -72,7 +73,7 @@ class Player(p.sprite.Sprite):
             self.walk_right_frames.append(spritesheet.get_image(x, 128, 64, 64))
             self.walk_up_frames.append(spritesheet.get_image(x, 192, 64, 64))
 
-    def animate(self, frame_length=100):
+    def _animate(self, frame_length=100):
         """Go to the next frame of animation.
 
         Set animation cycle based on the current velocity vector.
@@ -121,7 +122,7 @@ class TileMap:
         self.tile_size = tile_size
         self.spacing = spacing
 
-    def csv_to_list(self, csv_file):
+    def _csv_to_list(self, csv_file):
         """Return a 2D list made from data inside a csv file."""
         map_list = []
         with open(self.csv_file) as f:
@@ -130,7 +131,7 @@ class TileMap:
                 map_list.append(row) 
         return map_list
 
-    def parse_image(self):
+    def _parse_image(self):
         """Return a dictionary with index, tile surface pairs."""
         index_to_image_map = {}
         image = p.image.load(self.image_file)
@@ -152,7 +153,7 @@ class TileMap:
                 index += 1
         return index_to_image_map
     
-    def load_tiles(self, map_list, index_to_image_map):
+    def _load_tiles(self, map_list, index_to_image_map):
         """Load tile images to the group passed to the class."""
         for i, row in enumerate(map_list):
             for j, index in enumerate(row):
@@ -160,8 +161,8 @@ class TileMap:
         
     def load_map(self):
         """Call class methods to generate the final map."""
-        map_list = self.csv_to_list(self.csv_file)
-        index_to_image_map = self.parse_image()
-        tiles = self.load_tiles(map_list, index_to_image_map)
+        map_list = self._csv_to_list(self.csv_file)
+        index_to_image_map = self._parse_image()
+        tiles = self._load_tiles(map_list, index_to_image_map)
 
 
