@@ -34,7 +34,6 @@ class Game:
         """Update the screen and all sprites on it."""
         self.all_sprites.update()
         self.camera.update(self.player)
-        self.clock.tick(FPS)
 
     def _draw(self):
         """Draw all the sprites on the screen."""
@@ -47,6 +46,7 @@ class Game:
         """The game loop."""
         self.running = True 
         while self.running:
+            self.dt = self.clock.tick(FPS) / 1000
             self._events()
             self._update()
             self._draw()
