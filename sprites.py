@@ -25,6 +25,7 @@ class Spritesheet:
 class Player(p.sprite.Sprite):
     def __init__(self, game, spritesheet, pos):
         """Initialize required variables and load images."""
+        self.game = game
         self._layer = PLAYER_LAYER
         self.groups = game.all_sprites
         super().__init__(self.groups)
@@ -40,7 +41,7 @@ class Player(p.sprite.Sprite):
         self.velocity = Vector2(0, 0)
 
     def update(self):
-        """Move and animate the object."""
+        """Move and animate the player."""
         self._move()
         self._animate()
 
@@ -56,7 +57,7 @@ class Player(p.sprite.Sprite):
             self.velocity.x = -1
         elif keys[p.K_d]:
             self.velocity.x = 1
-        self.rect.center += self.velocity * PLAYER_SPEED 
+        self.rect.center += self.velocity * PLAYER_SPEED * self.game.dt
 
     def _load_images(self, spritesheet):
         """Load animations from spritesheet into separate lists."""
@@ -80,7 +81,7 @@ class Player(p.sprite.Sprite):
         than specified in frame_length parameter.
         """
         now = p.time.get_ticks()
-        if now - self.last_update > frame_length:
+        if now - self.last_update > frame_length * self.game.dt * FPS:
             self.last_update = now
 
             if self.velocity == Vector2(0, 0):
