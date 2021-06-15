@@ -45,11 +45,11 @@ class TileMap:
             target_size = tuple(i * ratio for i in current_size)
             image = p.transform.scale(image, target_size)
 
-        width = image.get_width()
-        height = image.get_height()
+        self.width = image.get_width()
+        self.height = image.get_height()
         index = 0
-        for y in range(0, height, TILE_SIZE + spacing):
-            for x in range(0, width, TILE_SIZE + spacing):
+        for y in range(0, self.height, TILE_SIZE + self.spacing):
+            for x in range(0, self.width, TILE_SIZE + self.spacing):
                 tile = image.subsurface(x, y, TILE_SIZE, TILE_SIZE)
                 index_to_image_map[index] = tile
                 index += 1
@@ -68,3 +68,16 @@ class TileMap:
         tiles = self._load_tiles(map_list, index_to_image_map)
 
 
+class Camera:
+    def __init__(self, map_width, map_height):
+        self.camera = p.Rect(0, 0, map_width, map_height)
+        self.map_width = map_width
+        self.map_height = map_height
+
+    def apply(self, entity):
+        return entity.rect.move(self.camera.topleft)
+    
+    def update(self, target):
+        x = -target.rect.x + SCREEN_WIDTH // 2
+        y = -target.rect.y + SCREEN_HEIGHT // 2
+        self.camera = p.Rect(x, y, SCREEN_WIDTH, SCREEN_HEIGHT)

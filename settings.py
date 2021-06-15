@@ -3,7 +3,7 @@ FPS = 60
 
 SCREEN_WIDTH = 960      # 16 * 64 or 32 * 32 or 64 * 16
 SCREEN_HEIGHT = 640     # 16 * 48 or 32 * 24 or 64 * 12
-TILE_SIZE = 32
+TILE_SIZE = 48
 
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)

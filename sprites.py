@@ -65,11 +65,12 @@ class Player(p.sprite.Sprite):
         self.walk_up_frames = []
         self.walk_down_frames = []
 
-        for x in range(0, 192, 64):
-            self.walk_down_frames.append(spritesheet.get_image(x, 0, 64, 64))
-            self.walk_left_frames.append(spritesheet.get_image(x, 64, 64, 64))
-            self.walk_right_frames.append(spritesheet.get_image(x, 128, 64, 64))
-            self.walk_up_frames.append(spritesheet.get_image(x, 192, 64, 64))
+        w, h = 64, 64
+        for x in range(0, 256, 64):
+            self.walk_down_frames.append(spritesheet.get_image(x, 0, w, h))
+            self.walk_left_frames.append(spritesheet.get_image(x, 64, w, h))
+            self.walk_right_frames.append(spritesheet.get_image(x, 128, w, h))
+            self.walk_up_frames.append(spritesheet.get_image(x, 192, w, h))
 
     def _animate(self, frame_length=100):
         """Go to the next frame of animation.

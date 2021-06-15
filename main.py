@@ -1,6 +1,6 @@
 import pygame as p
-import sprites as s
-import game_map
+import sprites as sp
+import world
 from settings import *
 
 
@@ -17,11 +17,12 @@ class Game:
     def new(self):
         """Initialize sprites and load the game map."""
         self.all_sprites = p.sprite.LayeredUpdates()
-        self.player = s.Player(self, s.Spritesheet('images/sheet.png', 2),
+        self.player = sp.Player(self, sp.Spritesheet('images/sheet.png', 2),
                                (100, 100))
-        self.tile_map = game_map.TileMap(self, 'map.csv', 
+        self.tile_map = world.TileMap(self, 'map.csv', 
                                   'images/rpg_tileset.png', 16)
         self.tile_map.load_map()
+        self.camera = world.Camera(self.tile_map.width, self.tile_map.height)
 
     def _events(self):
         """Check for input events."""
@@ -33,13 +34,15 @@ class Game:
     def _update(self):
         """Update the screen and all sprites on it."""
         self.all_sprites.update()
+        self.camera.update(self.player)
         self.clock.tick(FPS)
-        p.display.flip()
 
     def _draw(self):
         """Draw all the sprites on the screen."""
         self.screen.fill(WHITE)
-        self.all_sprites.draw(self.screen)
+        for sprite in self.all_sprites:
+            self.screen.blit(sprite.image, self.camera.apply(sprite))
+        p.display.flip()
 
     def run(self):
         """The game loop."""
