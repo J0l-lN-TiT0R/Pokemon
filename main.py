@@ -21,14 +21,13 @@ class Game:
                                (100, 100))
         self.tile_map = world.TileMap(self, 'map.csv', 
                                   'images/rpg_tileset.png', 16)
-        self.tile_map.load_map()
         self.camera = world.Camera(self.tile_map.width, self.tile_map.height)
 
     def _events(self):
         """Check for input events."""
         for event in p.event.get():
             if event.type == p.QUIT or (event.type == p.KEYUP 
-                                        and event.key == p.K_q):
+                                        and event.key == p.K_ESCAPE):
                 self.running = False
     
     def _update(self):
@@ -51,6 +50,7 @@ class Game:
             self._events()
             self._update()
             self._draw()
+
 
 if __name__ == "__main__":
     game = Game()

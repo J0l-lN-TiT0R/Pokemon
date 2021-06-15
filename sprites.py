@@ -17,7 +17,7 @@ class Spritesheet:
             self.sheet = p.transform.scale(self.sheet, self.target_size)
 
     def get_image(self, x, y, width, height):
-        """Return an image cut out from the object spritesheet"""
+        """Return an image cut out from the spritesheet."""
         image = self.sheet.subsurface(x, y, width, height)
         return image
 
@@ -50,11 +50,11 @@ class Player(p.sprite.Sprite):
         keys = p.key.get_pressed()
         if keys[p.K_w]:
             self.velocity.y = -1
-        if keys[p.K_s]:
+        elif keys[p.K_s]:
             self.velocity.y = 1
-        if keys[p.K_a]:
+        elif keys[p.K_a]:
             self.velocity.x = -1
-        if keys[p.K_d]:
+        elif keys[p.K_d]:
             self.velocity.x = 1
         self.rect.center += self.velocity * PLAYER_SPEED 
 

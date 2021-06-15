@@ -23,6 +23,7 @@ class TileMap:
         self.image_file = image_file
         self.tile_size = tile_size
         self.spacing = spacing
+        self._load_map()
 
     def _csv_to_list(self, csv_file):
         """Return a 2D list made from data inside a csv file."""
@@ -45,11 +46,11 @@ class TileMap:
             target_size = tuple(i * ratio for i in current_size)
             image = p.transform.scale(image, target_size)
 
-        self.width = image.get_width()
-        self.height = image.get_height()
+        width = image.get_width()
+        height = image.get_height()
         index = 0
-        for y in range(0, self.height, TILE_SIZE + self.spacing):
-            for x in range(0, self.width, TILE_SIZE + self.spacing):
+        for y in range(0, height, TILE_SIZE + self.spacing):
+            for x in range(0, width, TILE_SIZE + self.spacing):
                 tile = image.subsurface(x, y, TILE_SIZE, TILE_SIZE)
                 index_to_image_map[index] = tile
                 index += 1
@@ -61,23 +62,34 @@ class TileMap:
             for j, index in enumerate(row):
                 Tile(self.game, j, i, index_to_image_map[int(index)])
         
-    def load_map(self):
+    def _load_map(self):
         """Call class methods to generate the final map."""
         map_list = self._csv_to_list(self.csv_file)
         index_to_image_map = self._parse_image()
         tiles = self._load_tiles(map_list, index_to_image_map)
+        # Getting map size which camera object will use
+        self.width = len(map_list[0]) * TILE_SIZE
+        self.height = len(map_list) * TILE_SIZE
 
 
 class Camera:
     def __init__(self, map_width, map_height):
-        self.camera = p.Rect(0, 0, map_width, map_height)
+        """Initialize the offset and map size variables."""
+        self.offset = (0, 0)
         self.map_width = map_width
         self.map_height = map_height
 
     def apply(self, entity):
-        return entity.rect.move(self.camera.topleft)
+        """Return the offset to which the entity should be shifted."""
+        return entity.rect.move(self.offset)
     
     def update(self, target):
+        """Calculate the offset of the map in relation to target."""
         x = -target.rect.x + SCREEN_WIDTH // 2
         y = -target.rect.y + SCREEN_HEIGHT // 2
-        self.camera = p.Rect(x, y, SCREEN_WIDTH, SCREEN_HEIGHT)
+        # Camera constrains
+        x = min(x, 0)   # Left
+        y = min(y, 0)   # Top
+        x = max(x, -self.map_width + SCREEN_WIDTH)      # Right
+        y = max(y, -self.map_height + SCREEN_HEIGHT)    # Bottom
+        self.offset = (x, y)
