@@ -1,5 +1,5 @@
 GAME_TITLE = 'RPG'
-FPS = 10
+FPS = 60
 
 SCREEN_WIDTH = 960      # 16 * 64 or 32 * 32 or 64 * 16
 SCREEN_HEIGHT = 640     # 16 * 48 or 32 * 24 or 64 * 12

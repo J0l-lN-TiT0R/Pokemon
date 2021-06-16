@@ -19,8 +19,8 @@ class Game:
         self.all_sprites = p.sprite.LayeredUpdates()
         self.player = sp.Player(self, sp.Spritesheet('images/sheet.png', 2),
                                (100, 100))
-        self.tile_map = world.TileMap(self, 'map.csv', 
-                                  'images/rpg_tileset.png', 16)
+        self.tile_map = world.TileMap(self, 'map/map.csv', 
+                                  'map/rpg_tileset.png', 16)
         self.camera = world.Camera(self.tile_map.width, self.tile_map.height)
 
     def _events(self):
