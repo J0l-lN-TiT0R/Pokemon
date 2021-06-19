@@ -3,6 +3,11 @@ import pygame as p
 from settings import *
 
 
+# TO DO:
+# Create a list, containing wall indices to compare them
+# with tile indeces in imdex_to_image_map for creating walls
+
+
 class Tile(p.sprite.Sprite):
     def __init__(self, game, x, y, image):
         """Assign image and set the position of the top left corner."""
@@ -35,9 +40,12 @@ class TileMap:
         return map_list
 
     def _parse_image(self):
-        """Return a dictionary with index, tile surface pairs."""
+        """Return a dictionary with index/surface pairs.
+
+        Also scale surface tiles to the TILE_SIZE."""
         index_to_image_map = {}
         image = p.image.load(self.image_file)
+        # Scaling the whole tileset
         if self.tile_size != TILE_SIZE:
             ratio = int(TILE_SIZE / self.tile_size)
             assert ratio == int(ratio)

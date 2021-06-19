@@ -17,8 +17,8 @@ class Game:
     def new(self):
         """Initialize sprites and load the game map."""
         self.all_sprites = p.sprite.LayeredUpdates()
-        self.player = sp.Player(self, sp.Spritesheet('images/sheet.png', 2),
-                               (100, 100))
+        self.player = sp.Player(self, sp.Spritesheet('images/sheet.png', 4),
+                                (100, 100))
         self.tile_map = world.TileMap(self, 'map/map.csv', 
                                   'map/rpg_tileset.png', 16)
         self.camera = world.Camera(self.tile_map.width, self.tile_map.height)

@@ -4,17 +4,28 @@ from settings import *
 
 
 class Spritesheet:
-    def __init__(self, image_file, scale_factor=1):
+    def __init__(self, image_file, animation_len, scale_factor=1):
         """Load image_file into a self.sheet variable.
          
-        Scale it by scale_factor.
+        Image will be scaled to the scale_factor if given.
+        Otherwise it will be scaled to match the TILE_SIZE.
         """
         # Using convert_alpha() to make images blit faster on the screen
         self.sheet = p.image.load(image_file).convert_alpha()
+        self.animation_len = animation_len
+        self.size = Vector2(self.sheet.get_rect().size)
+        sprite_size = self.size / animation_len
         if scale_factor != 1:
-            self.size = self.sheet.get_rect().size
-            self.target_size = tuple(i*scale_factor for i in self.size)
-            self.sheet = p.transform.scale(self.sheet, self.target_size)
+            ratio = scale_factor
+        else:
+            ratio = TILE_SIZE / sprite_size.x
+
+        target_size = self.size * ratio
+        self.sprite_size = sprite_size * ratio
+        self.sheet = p.transform.scale(self.sheet, (int(target_size.x),
+                                                    int(target_size.y)))
+        self.size = Vector2(self.sheet.get_rect().size)
+        
 
     def get_image(self, x, y, width, height):
         """Return an image cut out from the spritesheet."""
@@ -23,18 +34,18 @@ class Spritesheet:
 
 
 class Player(p.sprite.Sprite):
-    def __init__(self, game, spritesheet, pos):
+    def __init__(self, game, sheet, pos):
         """Initialize required variables and load images."""
         self.game = game
         self._layer = PLAYER_LAYER
         self.groups = game.all_sprites
         super().__init__(self.groups)
 
-        self.image = spritesheet.get_image(0, 0, 64, 64)
+        self.image = sheet.get_image(0, 0, *sheet.sprite_size)
         self.rect = self.image.get_rect()
         self.rect.center = pos
 
-        self._load_images(spritesheet)
+        self._load_images(sheet)
         self.animation_cycle = self.walk_up_frames
         self.last_update = 0
         self.frame = 0
@@ -59,19 +70,19 @@ class Player(p.sprite.Sprite):
             self.velocity.x = 1
         self.rect.center += self.velocity * PLAYER_SPEED * self.game.dt
 
-    def _load_images(self, spritesheet):
-        """Load animations from spritesheet into separate lists."""
+    def _load_images(self, sheet):
+        """Load animations from sheet into separate lists."""
         self.walk_right_frames = []
         self.walk_left_frames = []
         self.walk_up_frames = []
         self.walk_down_frames = []
 
-        w, h = 64, 64
-        for x in range(0, 256, 64):
-            self.walk_down_frames.append(spritesheet.get_image(x, 0, w, h))
-            self.walk_left_frames.append(spritesheet.get_image(x, 64, w, h))
-            self.walk_right_frames.append(spritesheet.get_image(x, 128, w, h))
-            self.walk_up_frames.append(spritesheet.get_image(x, 192, w, h))
+        w, h = sheet.sprite_size
+        for x in range(0, int(sheet.size.x), int(sheet.sprite_size.x)):
+            self.walk_down_frames.append(sheet.get_image(x, 0, w, h))
+            self.walk_left_frames.append(sheet.get_image(x, h*1, w, h))
+            self.walk_right_frames.append(sheet.get_image(x, h*2, w, h))
+            self.walk_up_frames.append(sheet.get_image(x, h*3, w, h))
 
     def _animate(self, frame_length=100):
         """Go to the next frame of animation.
