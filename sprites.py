@@ -42,7 +42,8 @@ class Player(p.sprite.Sprite):
         super().__init__(self.groups)
 
         self.image = sheet.get_image(0, 0, *sheet.sprite_size)
-        self.rect = self.image.get_rect(size=(TILE_SIZE//2, TILE_SIZE//2))
+        self.rect = self.image.get_rect().inflate(-TILE_SIZE//2, -TILE_SIZE//2)
+        # p.draw.rect(self.image, p.Color('darkgreen'), self.rect)
         self.rect.center = pos
 
         self._load_images(sheet)

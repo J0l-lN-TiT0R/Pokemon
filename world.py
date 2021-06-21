@@ -16,7 +16,9 @@ class Tile(p.sprite.Sprite):
         self._layer = GROUND_LAYER
         super().__init__(self.groups)
         self.image = image
-        self.rect = self.image.get_rect(size=(TILE_SIZE//2, TILE_SIZE//2))
+        # self.rect = self.image.get_rect(size=(TILE_SIZE//2, TILE_SIZE//2))
+        self.rect = self.image.get_rect().inflate((-TILE_SIZE//3, -TILE_SIZE//3))
+        # p.draw.rect(self.image, p.Color('darkgreen'), self.rect)
         self.rect.x = x * TILE_SIZE
         self.rect.y = y * TILE_SIZE
 
