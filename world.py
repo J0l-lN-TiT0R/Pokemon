@@ -3,7 +3,7 @@ import pygame as p
 from settings import *
 
 
-# TODO: change index_to_image_map to list?
+# TODO: change image_list to list?
 
 
 class Tile(p.sprite.Sprite):
@@ -44,7 +44,7 @@ class TileMap:
         """Return a dictionary with index/surface pairs.
 
         Also scale surface tiles to the TILE_SIZE."""
-        index_to_image_map = {}
+        image_list = []
         image = p.image.load(self.image_file)
         # Scaling the whole tileset
         if self.tile_size != TILE_SIZE:
@@ -61,26 +61,26 @@ class TileMap:
         for y in range(0, height, TILE_SIZE + self.spacing):
             for x in range(0, width, TILE_SIZE + self.spacing):
                 tile = image.subsurface(x, y, TILE_SIZE, TILE_SIZE)
-                index_to_image_map[index] = tile
+                image_list.append(tile)
                 index += 1
-        return index_to_image_map
+        return image_list
     
-    def _load_tiles(self, map_list, index_to_image_map):
+    def _load_tiles(self, map_list, image_list):
         """Load tile images to the group passed to the class."""
         for i, row in enumerate(map_list):
             for j, index in enumerate(row):
                 if int(index) in WALL_LIST:
-                    Tile(self.game, j, i, index_to_image_map[int(index)],
+                    Tile(self.game, j, i, image_list[int(index)],
                          is_wall=True)
                 else:
-                    Tile(self.game, j, i, index_to_image_map[int(index)],
+                    Tile(self.game, j, i, image_list[int(index)],
                          is_wall=False)
         
     def _load_map(self):
         """Call class methods to generate the final map."""
         map_list = self._csv_to_list(self.csv_file)
-        index_to_image_map = self._parse_image()
-        tiles = self._load_tiles(map_list, index_to_image_map)
+        image_list = self._parse_image()
+        tiles = self._load_tiles(map_list, image_list)
         # Getting map size which camera object will use
         self.width = len(map_list[0]) * TILE_SIZE
         self.height = len(map_list) * TILE_SIZE
