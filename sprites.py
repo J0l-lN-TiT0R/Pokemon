@@ -42,7 +42,7 @@ class Player(p.sprite.Sprite):
         super().__init__(self.groups)
 
         self.image = sheet.get_image(0, 0, *sheet.sprite_size)
-        self.rect = self.image.get_rect()
+        self.rect = self.image.get_rect(size=(TILE_SIZE//2, TILE_SIZE//2))
         self.rect.center = pos
 
         self._load_images(sheet)
@@ -68,7 +68,16 @@ class Player(p.sprite.Sprite):
             self.velocity.x = -1
         elif keys[p.K_d]:
             self.velocity.x = 1
-        self.rect.center += self.velocity * PLAYER_SPEED * self.game.dt
+        self.velocity = self.velocity * PLAYER_SPEED * self.game.dt
+        if not self._is_colliding(self.velocity):
+            self.rect.center += self.velocity
+
+    def _is_colliding(self, velocity):
+        target_rect = self.rect.move(velocity)
+        for tile in self.game.walls:
+            if target_rect.colliderect(tile.rect):
+                return True
+        return False
 
     def _load_images(self, sheet):
         """Load animations from sheet into separate lists."""

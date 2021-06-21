@@ -3,19 +3,20 @@ import pygame as p
 from settings import *
 
 
-# TO DO:
-# Create a list, containing wall indices to compare them
-# with tile indeces in imdex_to_image_map for creating walls
+# TODO: change index_to_image_map to list?
 
 
 class Tile(p.sprite.Sprite):
-    def __init__(self, game, x, y, image):
+    def __init__(self, game, x, y, image, is_wall=False):
         """Assign image and set the position of the top left corner."""
+        if is_wall:
+            self.groups = game.all_sprites, game.walls
+        else:
+            self.groups = game.all_sprites
         self._layer = GROUND_LAYER
-        self.groups = game.all_sprites
         super().__init__(self.groups)
         self.image = image
-        self.rect = self.image.get_rect()
+        self.rect = self.image.get_rect(size=(TILE_SIZE//2, TILE_SIZE//2))
         self.rect.x = x * TILE_SIZE
         self.rect.y = y * TILE_SIZE
 
@@ -68,7 +69,12 @@ class TileMap:
         """Load tile images to the group passed to the class."""
         for i, row in enumerate(map_list):
             for j, index in enumerate(row):
-                Tile(self.game, j, i, index_to_image_map[int(index)])
+                if int(index) in WALL_LIST:
+                    Tile(self.game, j, i, index_to_image_map[int(index)],
+                         is_wall=True)
+                else:
+                    Tile(self.game, j, i, index_to_image_map[int(index)],
+                         is_wall=False)
         
     def _load_map(self):
         """Call class methods to generate the final map."""
