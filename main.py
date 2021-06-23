@@ -35,6 +35,9 @@ class Game:
             if event.type == p.QUIT or (event.type == p.KEYUP 
                                         and event.key == p.K_ESCAPE):
                 self.running = False
+            if event.type == p.MOUSEBUTTONDOWN:
+                if self.state == 'in_battle':
+                    self.battle_screen.process_input(event)
     
     def _update(self):
         """Update the screen and all sprites on it."""
