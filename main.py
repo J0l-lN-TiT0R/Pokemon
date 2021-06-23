@@ -1,6 +1,8 @@
 import pygame as p
+import pygame.freetype
 import sprites as sp
 import world
+from battle_screen import BattleScreen
 from settings import *
 
 
@@ -11,12 +13,15 @@ class Game:
         self.clock = p.time.Clock()
         self.screen = p.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         self.running = False
+        self.state = 'in_battle'
         p.display.set_caption(GAME_TITLE)
         p.display.set_icon(p.image.load("images/froggy.png"))
     
     def new(self):
         """Initialize sprites and load the game map."""
+        self.main_font = p.freetype.Font(None, 24)
         self.all_sprites = p.sprite.LayeredUpdates()
+        self.battle_screen = BattleScreen(self.screen, self.main_font)
         self.walls = p.sprite.Group()
         self.player = sp.Player(self, sp.Spritesheet('images/sheet.png', 4),
                                 (100, 100))
@@ -38,9 +43,12 @@ class Game:
 
     def _draw(self):
         """Draw all the sprites on the screen."""
-        self.screen.fill(WHITE)
-        for sprite in self.all_sprites:
-            self.screen.blit(sprite.image, self.camera.apply(sprite))
+        if self.state == 'walking':
+            self.screen.fill(WHITE)
+            for sprite in self.all_sprites:
+                self.screen.blit(sprite.image, self.camera.apply(sprite))
+        elif self.state == 'in_battle':
+            self.battle_screen.draw()
         p.display.flip()
 
     def run(self):
